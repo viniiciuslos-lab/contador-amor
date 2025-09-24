@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contador — encontrar meu amor</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#ff6b6b;--text:#e6eef8}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#071022 0%, #0b1220 50%, #081126 100%);font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    .wrap{width:clamp(320px,75vmin,760px);background:radial-gradient(ellipse at top left, rgba(255,255,255,0.03), transparent),var(--card);border-radius:18px;padding:36px;box-shadow:0 10px 30px rgba(2,6,23,0.6);text-align:center;color:var(--text)}
+    h1{margin:0 0 18px;font-size:20px;font-weight:600;text-transform:lowercase;letter-spacing:0.2px}
+    .clock{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .unit{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px 20px;border-radius:12px;min-width:92px}
+    .value{font-size:36px;font-weight:700;color:var(--accent);line-height:1}
+    .label{font-size:12px;text-transform:uppercase;opacity:0.7;margin-top:6px}
+    .note{margin-top:18px;font-size:13px;opacity:0.8}
+    .small{font-size:12px;opacity:0.75}
+    .cta{display:inline-block;margin-top:18px;padding:10px 16px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>falta este tempo para encontrar meu amor</h1>
+    <div id="count" class="clock" aria-live="polite">
+      <div class="unit"><div id="days" class="value">--</div><div class="label">dias</div></div>
+      <div class="unit"><div id="hours" class="value">--</div><div class="label">horas</div></div>
+      <div class="unit"><div id="minutes" class="value">--</div><div class="label">min</div></div>
+      <div class="unit"><div id="seconds" class="value">--</div><div class="label">seg</div></div>
+    </div>
+    <div id="message" class="note small">Contagem regressiva para <strong>sex, 26/09/2025 — 17:00 (Horário de Fortaleza — UTC−03:00)</strong></div>
+    <div style="margin-top:12px">
+      <button class="cta" id="copyBtn">Copiar link de abertura (arquivo HTML)</button>
+    </div>
+  </div>
+
+  <script>
+    // TARGET: 26 de setembro de 2025 às 17:00 (horário de Fortaleza (UTC-3))
+    const target = new Date('2025-09-26T17:00:00-03:00');
+
+    const $days = document.getElementById('days');
+    const $hours = document.getElementById('hours');
+    const $minutes = document.getElementById('minutes');
+    const $seconds = document.getElementById('seconds');
+    const $message = document.getElementById('message');
+
+    function pad(n){return String(n).padStart(2,'0')}
+
+    function update(){
+      const now = new Date();
+      const diff = target - now;
+      if(diff <= 0){
+        $days.textContent = '00';
+        $hours.textContent = '00';
+        $minutes.textContent = '00';
+        $seconds.textContent = '00';
+        $message.innerHTML = '<strong>Chegou! ❤️</strong> — já é 26/09/2025 17:00 (Horário de Fortaleza).';
+        clearInterval(timer);
+        return;
+      }
+      const sec = Math.floor(diff / 1000) % 60;
+      const min = Math.floor(diff / (1000 * 60)) % 60;
+      const hrs = Math.floor(diff / (1000 * 60 * 60)) % 24;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      $days.textContent = String(days).padStart(2,'0');
+      $hours.textContent = pad(hrs);
+      $minutes.textContent = pad(min);
+      $seconds.textContent = pad(sec);
+    }
+
+    update();
+    const timer = setInterval(update, 1000);
+
+    // Botão para copiar instruções rápidas
+    document.getElementById('copyBtn').addEventListener('click', async ()=>{
+      const text = `Salve este código como um arquivo .html (ex: contador_encontrar_meu_amor.html) e abra no navegador. O arquivo mostra a contagem regressiva até 26/09/2025 17:00 (Horário de Fortaleza - UTC-03:00).`;
+      try{
+        await navigator.clipboard.writeText(text);
+        alert('Instruções copiadas para a área de transferência. Cole e envie o arquivo HTML ou as instruções.');
+      }catch(e){
+        prompt('Copie este texto manualmente:', text);
+      }
+    });
+  </script>
+</body>
+</html>
