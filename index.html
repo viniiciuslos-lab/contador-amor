@@ -85,3 +85,122 @@
   </script>
 </body>
 </html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contador — encontrar meu amor</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+    :root{--bg:#0f172a;--card:rgba(0,0,0,0.5);--accent:#ff6b6b;--text:#fff}
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:url("fundo.jpg") no-repeat center center/cover;
+      font-family:'Great Vibes', cursive;
+      overflow:hidden;
+    }
+    .wrap{width:clamp(320px,75vmin,760px);background:var(--card);border-radius:18px;padding:36px;box-shadow:0 10px 30px rgba(0,0,0,0.6);text-align:center;color:var(--text)}
+    h1{margin:0 0 18px;font-size:28px;font-weight:600;text-shadow:0 0 8px rgba(0,0,0,0.6)}
+    .clock{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .unit{background:rgba(255,255,255,0.1);padding:18px 20px;border-radius:12px;min-width:92px;animation:pulse 2s infinite}
+    .value{font-size:36px;font-weight:700;color:var(--accent);line-height:1}
+    .label{font-size:14px;text-transform:uppercase;opacity:0.9;margin-top:6px}
+    .note{margin-top:18px;font-size:14px;opacity:0.9}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+    /* corações caindo */
+    @keyframes fall {
+      from { transform: translateY(-10vh); opacity: 1; }
+      to { transform: translateY(110vh); opacity: 0; }
+    }
+    .heart{
+      position:fixed;top:-10vh;font-size:24px;color:red;animation:fall 5s linear;pointer-events:none;
+    }
+
+    /* botão da música */
+    .btnMusic{
+      margin-top:20px;padding:10px 18px;border-radius:12px;border:none;cursor:pointer;
+      font-size:16px;font-family:'Great Vibes',cursive;background:var(--accent);color:white;
+      box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>falta este tempo para encontrar meu amor</h1>
+    <div id="count" class="clock" aria-live="polite">
+      <div class="unit"><div id="days" class="value">--</div><div class="label">dias</div></div>
+      <div class="unit"><div id="hours" class="value">--</div><div class="label">horas</div></div>
+      <div class="unit"><div id="minutes" class="value">--</div><div class="label">min</div></div>
+      <div class="unit"><div id="seconds" class="value">--</div><div class="label">seg</div></div>
+    </div>
+    <div id="message" class="note">Contagem regressiva para <strong>sex, 26/09/2025 — 17:00</strong></div>
+    <button class="btnMusic" id="playMusic">🎵 Tocar música</button>
+  </div>
+
+  <!-- Música -->
+  <audio id="bgMusic" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Contagem regressiva
+    const target = new Date('2025-09-26T17:00:00-03:00');
+    const $days = document.getElementById('days');
+    const $hours = document.getElementById('hours');
+    const $minutes = document.getElementById('minutes');
+    const $seconds = document.getElementById('seconds');
+    const $message = document.getElementById('message');
+
+    function pad(n){return String(n).padStart(2,'0')}
+    function update(){
+      const now = new Date();
+      const diff = target - now;
+      if(diff <= 0){
+        $days.textContent = '00';
+        $hours.textContent = '00';
+        $minutes.textContent = '00';
+        $seconds.textContent = '00';
+        $message.innerHTML = '<strong>Chegou nosso momento ❤️</strong>';
+        clearInterval(timer);
+        return;
+      }
+      const sec = Math.floor(diff / 1000) % 60;
+      const min = Math.floor(diff / (1000 * 60)) % 60;
+      const hrs = Math.floor(diff / (1000 * 60 * 60)) % 24;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      $days.textContent = String(days).padStart(2,'0');
+      $hours.textContent = pad(hrs);
+      $minutes.textContent = pad(min);
+      $seconds.textContent = pad(sec);
+    }
+    update();
+    const timer = setInterval(update, 1000);
+
+    // corações caindo
+    function createHeart(){
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤️";
+      heart.style.left = Math.random()*100+"vw";
+      heart.style.fontSize = (Math.random()*20+20)+"px";
+      heart.style.animationDuration = (Math.random()*3+3)+"s";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(),5000);
+    }
+    setInterval(createHeart, 700);
+
+    // música
+    const music = document.getElementById("bgMusic");
+    const btn = document.getElementById("playMusic");
+    btn.addEventListener("click", ()=>{
+      music.play();
+      btn.textContent = "🎶 Música tocando...";
+      btn.disabled = true;
+    });
+  </script>
+</body>
+</html>
